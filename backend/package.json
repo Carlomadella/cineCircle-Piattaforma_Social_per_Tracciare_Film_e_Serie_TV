@@ -1,0 +1,18 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Il tuo backend sarà costruito con Node.js usando il framework Express. L'API seguirà i principi REST, quindi ogni risorsa avrà URL chiari e userà i metodi HTTP in modo semantico. Organizzerai il codice in modo modulare per mantenere tutto ordinato e facile da modificare.",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --env-file=.env app.js",
+    "watch": "node --env-file=.env --watch app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mysql2": "^3.15.3"
+  }
+}
