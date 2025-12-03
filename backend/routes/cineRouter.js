@@ -1,17 +1,31 @@
 const express = require('express');
 const router = express.Router();
 
-// Importiamo il middleware di autenticazione (JWT)
-// Assicurati di aver creato questo file in /middleware/authMiddleware.js
-const { verifyToken } = require('../middlewares/authMiddleware');
-
-// Importiamo i controller (che dovrai creare nella cartella /controllers)
+// Importiamo i controller
 const contentController = require('../controllers/contentController');
 const reviewController = require('../controllers/reviewController');
 const collectionController = require('../controllers/collectionController');
 const listController = require('../controllers/listController');
 const socialController = require('../controllers/socialController');
 const authController = require('../controllers/authController')
+// Importo i middleware
+const { validateRegister, validateReview } = require('../middlewares/validationMiddleware');
+// Importiamo il middleware di autenticazione (JWT)
+const { verifyToken } = require('../middlewares/authMiddleware');
+
+
+// ==========================================
+// 0. AUTENTICAZIONE (Login & Register)
+// ==========================================
+
+// POST /api/register
+// Spiegazione: Prima esegue 'validateRegister'. Se i dati mancano, si ferma e dà errore.
+// Se i dati ci sono tutti, passa la palla a 'authController.register'.
+router.post('/register', validateRegister, authController.register);
+
+// POST /api/login
+// Qui non abbiamo messo validatori particolari per ora, va diretto al controller.
+router.post('/login', authController.login);
 
 // ==========================================
 // 1. CONTENUTI (Contents & Genres)
@@ -65,7 +79,7 @@ router.get('/reviews/:contentId', reviewController.getContentReviews);
 // POST /api/reviews
 // Crea una nuova recensione (Privato)
 // Body: { content_id, rating, text }
-router.post('/reviews', verifyToken, reviewController.createReview);
+router.post('/reviews', verifyToken, validateReview, reviewController.createReview); 
 
 // PUT /api/reviews/:reviewId
 // Modifica una recensione esistente (solo se sei l'autore)
@@ -131,6 +145,5 @@ router.get('/feed', verifyToken, socialController.getActivityFeed);
 // GET /api/users/:userId/stats
 // Ottiene statistiche utente (film visti, generi preferiti, ecc.)
 router.get('/users/:userId/stats', socialController.getUserStats);
-
 
 module.exports = router;
