@@ -1,5 +1,110 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+/* src/index.css */
+
+:root {
+  --bg-body: #141414; /* Sfondo pagina */
+  --bg-surface: #1f1f1f; /* Sfondo card/navbar */
+  --primary-color: #e50914; /* Rosso Cinema */
+  --text-main: #ffffff; /* Bianco */
+  --text-muted: #b3b3b3; /* Grigio testo */
+  --accent-gold: #ffd700; /* Oro per stelle */
+}
+
+/* 1. RESET GENERALE */
+body {
+  background-color: var(--bg-body) !important;
+  color: var(--text-main) !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 2. OVERRIDE BOOTSTRAP CARDS (Le rendiamo scure) */
+.card {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Bordo sottile */
+}
+
+.card-title a {
+  color: var(--text-main) !important;
+  text-decoration: none;
+}
+.card-title a:hover {
+  color: var(--primary-color) !important;
+}
+
+/* 3. OVERRIDE BOOTSTRAP FORMS (Input scuri) */
+.form-control {
+  background-color: #333 !important;
+  border: 1px solid #444 !important;
+  color: white !important;
+}
+.form-control:focus {
+  background-color: #444 !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.25rem rgba(229, 9, 20, 0.25) !important;
+}
+.form-label {
+  color: var(--text-muted);
+}
+
+/* 4. BOTTONI PERSONALIZZATI */
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background-color: #b20710 !important; /* Rosso più scuro */
+}
+
+/* 5. LINK */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/* 6. CAROSELLO ORIZZONTALE (Quello che abbiamo fatto prima) */
+.horizontal-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 20px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--bg-body);
+}
+
+.horizontal-scroll-container .col-card {
+  flex: 0 0 auto;
+  width: 200px;
+  margin-right: 15px;
+}
+
+/* Effetto Hover sulle Card */
+.horizontal-scroll-container .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.horizontal-scroll-container .card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Scrollbar personalizzata per Webkit (Chrome/Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-body);
+}
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
 }

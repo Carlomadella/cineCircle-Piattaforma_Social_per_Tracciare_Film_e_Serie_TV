@@ -16,6 +16,18 @@ L'aspetto sociale della piattaforma è fondamentale. Gli utenti possono seguirsi
 
 Il frontend sarà costruito interamente con React, che ti permette di creare interfacce utente modulari e riutilizzabili organizzate in componenti. React rende molto più facile gestire lo stato dell'applicazione e aggiornare l'interfaccia quando i dati cambiano.
 
+### Struttura delle Cartelle
+
+    src/components (Pezzi riutilizzabili: Navbar, Footer, Cards)
+
+    src/pages (Le viste complete: Home, Login, Profile, Detail)
+
+    src/context (Per lo stato globale dell'utente: AuthContext)
+
+    src/services (Configurazione API e chiamate Axios)
+
+    src/styles (Per il tuo CSS personalizzato)
+
 ### Struttura dei Componenti
 
 Organizzerai la tua applicazione in componenti che rappresentano pezzi dell'interfaccia. Avrai componenti grandi che rappresentano pagine intere come HomePage, SearchPage, ContentDetailPage, ProfilePage. E avrai componenti più piccoli e riutilizzabili come ContentCard che mostra un film in una card, ReviewCard che mostra una recensione, Header per la barra di navigazione in alto, Footer per il piè di pagina. Ogni componente sarà in un file separato, così il codice rimane ordinato.
@@ -69,6 +81,22 @@ Userai Bootstrap come framework CSS base. Includerai Bootstrap nel tuo progetto 
 Oltre a Bootstrap, scriverai CSS custom per personalizzare l'aspetto e dare alla tua app un'identità unica. Creerai un file style.css dove definirai il tuo color scheme, la tipografia personalizzata da Google Fonts, e gli stili per i tuoi componenti specifici. Userai transizioni CSS per rendere le interazioni fluide, per esempio quando l'utente passa il mouse su una card potresti farla sollevare leggermente con un'ombra più pronunciata usando transition su transform e box-shadow.
 
 Per le icone userai Font Awesome che è una libreria di icone vettoriali. La includerai via CDN e poi potrai usare le icone mettendo tag i con le classi appropriate, per esempio i class equal fas fa-star per una stella piena.
+
+# Palette di colori
+
+La Palette "Cinema Dark"
+
+    Sfondo Principale (Deep Dark): #141414 (Un nero non assoluto, tipico dello streaming).
+
+    Superfici/Card (Dark Grey): #1F1F1F (Per distinguere le card dallo sfondo).
+
+    Colore Primario (Brand Red): #E50914 (Un rosso vibrante per i bottoni importanti e il logo, crea urgenza e passione).
+
+    Testo Principale: #FFFFFF (Bianco puro per massima leggibilità).
+
+    Testo Secondario: #B3B3B3 (Grigio chiaro per info meno importanti come date o generi).
+
+    Accento (Gold): #FFD700 (Oro, specifico per le stelle e i voti).
 
 ### Loading States e Feedback
 

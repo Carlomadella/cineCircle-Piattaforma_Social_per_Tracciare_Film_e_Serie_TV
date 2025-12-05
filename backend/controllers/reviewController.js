@@ -1,41 +1,45 @@
+const Review = require('../models/reviewModel');
+
+// GET /api/reviews/:contentId
 const getContentReviews = function(req, res) {
     const contentId = req.params.contentId;
 
-    res.json({
-        content_id: contentId,
-        reviews: [
-            { user: "Mario", rating: 5, text: "Bel film!" },
-            { user: "Luigi", rating: 3, text: "Non male." }
-        ]
+    Review.getByContent(contentId, function(err, data) {
+        if (err) {
+            return res.status(500).json({ message: "Errore nel caricamento recensioni" });
+        }
+        res.json(data);
     });
 };
 
+// POST /api/reviews
 const createReview = function(req, res) {
-    const contentId = req.body.content_id;
-    const rating = req.body.rating;
-    const text = req.body.text;
+    const userId = req.user.id; // Dal Token
+    const { content_id, rating, text } = req.body;
 
-    res.status(201).json({
-        message: "Recensione creata",
-        review: { contentId: contentId, rating: rating, text: text }
+    // Validazione minima
+    if (!rating || !text) {
+        return res.status(400).json({ message: "Voto e testo sono obbligatori." });
+    }
+
+    const newReview = {
+        user_id: userId,
+        content_id: content_id,
+        rating: rating,
+        text: text
+    };
+
+    Review.create(newReview, function(err, result) {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Errore salvataggio recensione." });
+        }
+        res.status(201).json({ message: "Recensione pubblicata!" });
     });
 };
 
-const updateReview = function(req, res) {
-    const reviewId = req.params.reviewId;
-    
-    res.json({ message: "Recensione " + reviewId + " aggiornata" });
-};
+// ... lascia update/delete vuoti o placeholder per ora ...
+const updateReview = (req, res) => res.json({msg: "Todo"});
+const deleteReview = (req, res) => res.json({msg: "Todo"});
 
-const deleteReview = function(req, res) {
-    const reviewId = req.params.reviewId;
-
-    res.json({ message: "Recensione " + reviewId + " eliminata" });
-};
-
-module.exports = {
-    getContentReviews,
-    createReview,
-    updateReview,
-    deleteReview
-};
+module.exports = { getContentReviews, createReview, updateReview, deleteReview };

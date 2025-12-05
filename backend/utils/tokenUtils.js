@@ -1,24 +1,22 @@
-// utils/tokenUtils.js
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-// Questa chiave segreta dovrebbe stare in un file .env, ma per ora va bene qui
-const SECRET_KEY = "la-mia-super-chiave-segreta-cinecircle"; 
+// IMPORTANTE: Questa chiave deve essere IDENTICA a quella nel middleware
+const SECRET_KEY = process.env.JWT_SECRET || "la-tua-chiave-segreta-super-sicura"; 
 
-// Genera il token
 const generateToken = function(user) {
-    // Creiamo il payload (i dati dentro il token)
     const payload = {
-        id: user.id,
+        id: user.id,        // Salviamo l'ID
         username: user.username,
         email: user.email
     };
 
-    // Il token scade dopo 24 ore
+    // Generiamo il token
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '24h' });
     return token;
 };
 
-// Verifica se il token è valido (lo useremo nel middleware)
+// Funzione opzionale per verifica manuale
 const verifyTokenValid = function(token) {
     try {
         return jwt.verify(token, SECRET_KEY);

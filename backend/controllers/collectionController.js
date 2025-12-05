@@ -1,21 +1,28 @@
-const getMyCollection = function(req, res) {
-    // In futuro useremo req.user.id per sapere chi è loggato
-    const statusFilter = req.query.status;
+const Collection = require('../models/collectionModel');
 
-    res.json({
-        message: "La tua collezione",
-        filter_used: statusFilter,
-        collection: []
+const addToCollection = function(req, res) {
+    const userId = req.user.id; // Preso dal Token (authMiddleware)
+    const { content_id, status } = req.body;
+
+    console.log(`Utente ${userId} aggiunge film ${content_id} come ${status}`);
+
+    Collection.addToCollection(userId, content_id, status, function(err, result) {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Errore Database" });
+        }
+        res.json({ message: "Collezione aggiornata!" });
     });
 };
 
-const addToCollection = function(req, res) {
-    const contentId = req.body.content_id;
-    const status = req.body.status;
+const getMyCollection = function(req, res) {
+    const userId = req.user.id;
 
-    res.status(201).json({
-        message: "Aggiunto alla collezione",
-        data: { contentId: contentId, status: status }
+    Collection.getCollection(userId, function(err, data) {
+        if (err) {
+            return res.status(500).json({ message: "Errore Database" });
+        }
+        res.json(data);
     });
 };
 
