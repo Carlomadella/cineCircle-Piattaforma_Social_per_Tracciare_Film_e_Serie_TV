@@ -260,6 +260,200 @@ La sicurezza deve essere una priorità in ogni fase dello sviluppo. Anche se sta
 
 Mai e poi mai salvare password in chiaro nel database. Userai la libreria bcrypt che installi con npm. Quando un utente si registra, prima di salvare la password la passerai attraverso bcrypt.hash che prende la password e un salt factor, tipo dodici, e restituisce un hash. Questo hash è una stringa lunga e apparentemente casuale che non può essere decifrata per ottenere la password originale. Salverai questo hash nel database. Quando l'utente fa login, userai bcrypt.compare per confrontare la password inserita con l'hash salvato. Questa funzione applica lo stesso processo di hashing e vede se il risultato corrisponde, senza mai decriptare l'hash originale.
 
+Benvenuto nella fase 2 di CineCircle. L'obiettivo è evolvere il progetto da un diario di tracciamento a una Web App completa dove gli utenti possono non solo catalogare, ma anche guardare contenuti (tramite trailer o embed), gestire una libreria complessa e interagire socialmente in spazi dedicati.
+
+1. Evoluzione del Database (MySQL)
+
+Per supportare le nuove funzionalità (streaming, date precise, ordinamenti avanzati), dobbiamo aggiornare lo schema del database.
+Modifiche alla tabella contents
+
+Dobbiamo aggiungere campi per gestire i video e le date precise.
+
+    release_date (DATE): Sostituisce o affianca il campo year. Serve per la sezione "Ultime Uscite".
+
+    video_url (TEXT): Conterrà il link al video (es. https://www.youtube.com/watch?v=... o https://vidcloud.co/embed/...).
+
+    video_source (ENUM): Valori: 'youtube', 'embed'. Serve al Frontend per sapere quale player caricare (YouTube Player o Iframe generico).
+
+    view_count (INT DEFAULT 0): Serve per calcolare i "Più Popolari" basandosi sulle visualizzazioni effettive (click sul tasto Play).
+
+Azione Richiesta:
+Esegui uno script ALTER TABLE o aggiorna il tuo create_tables.sql e ri-popola il database.
+Popolamento Dati (Strategia Ibrida)
+
+Per avere un sito "vivo":
+
+    Opzione Manuale: Inserisci a mano 5-10 film con link YouTube validi per testare.
+
+    Opzione Script (Consigliata): Crea uno script Node.js che usa l'API di TMDB (The Movie Database) per scaricare massivamente:
+
+        Titoli, Poster, Date di uscita reali.
+
+        Link ai Trailer (TMDB fornisce i link YouTube).
+
+        Questo ti permetterà di avere centinaia di contenuti reali in pochi secondi.
+
+2. Nuova Architettura Backend (API)
+
+Oltre agli endpoint esistenti, dovrai implementarne di nuovi per le specifiche richieste.
+A. Streaming e Visione
+
+    GET /api/contents/:id/play:
+
+        Restituisce l'URL del video.
+
+        Logica: Incrementa il contatore view_count del contenuto (+1 visualizzazione).
+
+        Opzionale: Se l'utente è loggato, imposta automaticamente lo stato su watching nella sua collezione se non era già presente.
+
+B. Homepage Avanzata (Endpoint Multipli o Query Param)
+
+    GET /api/contents/latest?type=movie: Ordina per release_date DESC (Ultime uscite Film).
+
+    GET /api/contents/latest?type=tv_series: Ordina per release_date DESC (Ultime uscite Serie).
+
+    GET /api/contents/top-rated: Ordina per average_rating DESC (I Migliori - Qualità).
+
+    GET /api/contents/popular: Ordina per view_count DESC o popularity_count DESC (I Più Popolari - Quantità).
+
+C. Gestione Libreria
+
+    DELETE /api/my-collection/:contentId: Endpoint per rimuovere un contenuto dalla Watchlist/Libreria.
+
+3. Nuova Architettura Frontend (React)
+
+Ristrutturazione completa della navigazione e delle pagine.
+A. Il Player Video (Nuova Feature)
+
+Nella pagina Dettaglio Film, sostituirai o affiancherai l'immagine statica con un player.
+
+    Se video_source === 'youtube': Usa la libreria react-youtube o un iframe standard di YouTube.
+
+    Se video_source === 'embed': Usa un iframe generico che punta all'URL esterno.
+
+    Il player può aprirsi in un Modale (finestra sovrapposta) quando l'utente clicca "Guarda Trailer" o "Riproduci".
+
+B. Riorganizzazione Pagine Utente
+
+Dividiamo il vecchio "Profilo" in due pagine distinte:
+
+    Pagina Profilo (/profile):
+
+        Info Personali: Avatar, Nome, Bio, Email (nascosta/mostra), Data iscrizione.
+
+        Impostazioni: Modifica password, cambia avatar.
+
+        Statistiche: Numero film visti, grafici generi preferiti (Chart.js).
+
+        Social: Lista follower/following.
+
+    Pagina La Mia Libreria (/library) - EX Watchlist:
+
+        Questa pagina sostituisce la vecchia visualizzazione della collezione nel profilo.
+
+        Tab Navigabili: "Visti" (History), "In Corso", "Da Vedere" (Watchlist), "Abbandonati".
+
+        Funzionalità: Su ogni card, un piccolo bottone (es. icona cestino o menu tre puntini) per rimuovere il film dalla lista.
+
+C. Pagina Feed Attività (/feed)
+
+    Una pagina dedicata (accessibile dalla Navbar) che mostra solo le attività degli utenti che segui.
+
+    Layout simile a un social network (Facebook/Instagram):
+
+        "Mario ha recensito Matrix (5 stelle)"
+
+        "Giulia ha iniziato a guardare Breaking Bad"
+
+    Infinite Scroll: Carica le attività man mano che scorri.
+
+D. Homepage 2.0 (Struttura a Caroselli)
+
+La Home sarà strutturata a "strisce" orizzontali (come Netflix), una sotto l'altra:
+
+    Hero Section: Film in evidenza (random o l'ultimo uscito).
+
+    "Continua a guardare": Carosello dei film in stato watching dell'utente.
+
+    "Ultime Uscite - Film": Ordinati per data.
+
+    "Ultime Uscite - Serie TV": Ordinate per data.
+
+    "I Migliori di Sempre": Quelli con voto medio più alto (Top Rated).
+
+    "I Più Popolari su CineCircle": Quelli con più visualizzazioni/aggiunte.
+
+4. Milestone "Legacy" (Da completare dal vecchio piano)
+
+Queste funzionalità erano nel piano originale e devono essere integrate nel nuovo flusso.
+
+    Email di Benvenuto (Nodemailer):
+
+        Al momento della registrazione (POST /register), il backend deve inviare una mail reale.
+
+        Usa EmailJS per testare in locale senza spammare indirizzi veri. (Service ID: service_xuzdlu6, Template ID: template_t1i7k0v, Public Key: LAke0jMq2wWH1xuB1)
+
+        TODO Una volta effettuato il deployment cambiare l'Url della mail inviata tramite EmailJS e il reply to
+
+    Filtri Avanzati (SearchPage):
+
+        Attualmente hai solo la barra di ricerca.
+
+        Aggiungi dropdown per: Genere, Anno (Range), Voto Minimo.
+
+        Questi devono combinarsi (es. "Horror" + "2020-2023" + "4 stelle").
+
+    Sistema di Follow (Frontend):
+
+        Nel backend le tabelle ci sono.
+
+        Nel frontend, quando visiti il profilo di un altro utente (/profile/:userId), devi mostrare il bottone "Segui / Smetti di seguire".
+
+    Commenti alle Recensioni:
+
+        Sotto ogni recensione nella pagina dettaglio, aggiungi un piccolo form per rispondere e una lista di commenti nidificati.
+
+5. Guida Passo-Passo all'Implementazione
+
+Ecco l'ordine logico consigliato per lavorare:
+Settimana 1: Core & Dati
+
+    Database Upgrade: Esegui le query ALTER TABLE per date e video.
+
+    Script Popolamento: Scrivi uno script o inserisci manualmente dati di qualità (Trailer YouTube veri, Date vere).
+
+    Backend Logic: Aggiorna i Controller per supportare i nuovi ordinamenti (Date, Views).
+
+Settimana 2: Frontend Evolution
+
+    Split Profilo/Libreria: Crea la nuova pagina /library e sposta lì la logica della collezione. Pulisci la pagina /profile.
+
+    Homepage Redesign: Implementa i caroselli multipli con le nuove query API.
+
+    Player Video: Implementa il modale con react-youtube nella pagina dettaglio.
+
+Settimana 3: Social & Rifiniture
+
+    Pagina Feed: Crea la pagina dedicata alle attività.
+
+    Follow System: Rendi funzionante il bottone "Segui" sui profili altrui.
+
+    Email & Filtri: Implementa Nodemailer e la sidebar dei filtri avanzati nella ricerca.
+
+6. Stack Tecnologico Confermato
+
+   Frontend: React (Vite), React Router v6, Axios, Bootstrap 5 + Custom CSS (Dark Mode), FontAwesome.
+
+   Backend: Node.js, Express.js.
+
+   Database: MySQL (con driver mysql2).
+
+   Auth: JWT (JSON Web Tokens) + bcrypt.
+
+   Email: Nodemailer.
+
+   Video: React Youtube / Iframe Embeds.
+
 ### SQL Injection
 
 Questo è un attacco dove un malintenzionato cerca di inserire codice SQL dannoso nei tuoi input per manipolare il database. La difesa è semplice: non concatenare mai direttamente l'input dell'utente nelle query SQL. Usa sempre prepared statements o parameterized queries. In pratica, invece di scrivere SELECT asterisco FROM users WHERE email uguale apice più la variabile email più apice, scriverai SELECT asterisco FROM users WHERE email uguale punto interrogativo, e poi passerai l'email come parametro separato. Il database si occuperà automaticamente di escapare i caratteri speciali e prevenire l'injection.

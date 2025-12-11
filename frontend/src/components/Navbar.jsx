@@ -1,26 +1,36 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LiveSearchBar from './LiveSearchBar';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogout = () => {
-        logout(); // Pulisce il token
-        navigate('/login'); // Porta al login
+        logout();
+        navigate('/login');
     };
+
+    const hideSearchOn = ['/login', '/register'];
+    const showSearch = !hideSearchOn.includes(location.pathname);
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top" 
              style={{ backgroundColor: '#1F1F1F', borderBottom: '1px solid #333' }}>
             <div className="container">
-                {/* LOGO */}
-                <Link className="navbar-brand fw-bold d-flex align-items-center" to="/" style={{ color: '#E50914', fontSize: '1.5rem' }}>
-                    <i className="fas fa-film me-2"></i> CineCircle
-                </Link>
+                {/* LOGO IMMAGINE */}
+<Link className="navbar-brand d-flex align-items-center py-0" to="/">
+    <img 
+        src="/logo_CineCircle.png" 
+        alt="CineCircle" 
+        // Aumentiamo l'altezza e aggiungiamo un filtro per renderlo nitido
+        style={{ height: '65px', objectFit: 'contain' }} 
+        className="me-2"
+    />
+</Link>
                 
-                {/* HAMBURGER MENU (Per mobile) */}
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span className="navbar-toggler-icon"></span>
                 </button>
@@ -28,23 +38,14 @@ const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <div className="navbar-nav ms-auto align-items-center">
                         
-                        {/* LINK COMUNI */}
-                        <Link className="nav-link text-white mx-2" to="/search">
-                            <i className="fas fa-search me-1"></i> Cerca
-                        </Link>
+                        {showSearch && <LiveSearchBar />}
 
-                        {/* LOGICA UTENTE LOGGATO / OSPITE */}
                         {user ? (
                             <>
                                 <Link className="nav-link text-white mx-2" to="/profile">
                                     <i className="fas fa-user-circle me-1"></i> {user.username}
                                 </Link>
-                                <button 
-                                    onClick={handleLogout} 
-                                    className="btn btn-outline-danger btn-sm ms-3"
-                                >
-                                    Esci
-                                </button>
+                                <button onClick={handleLogout} className="btn btn-outline-danger btn-sm ms-3">Esci</button>
                             </>
                         ) : (
                             <>

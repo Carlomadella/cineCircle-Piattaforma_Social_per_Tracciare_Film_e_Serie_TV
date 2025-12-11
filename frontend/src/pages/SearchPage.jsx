@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import ContentCard from '../components/ContentCard';
 
@@ -42,6 +43,13 @@ const SearchPage = () => {
 
     return (
         <div className="container mt-5">
+
+            <div className="mb-3">
+                <Link to="/" className="text-white-50 text-decoration-none hover-white">
+                    <i className="fas fa-arrow-left me-2"></i> Torna alla Home
+                </Link>
+            </div>
+
             <h2 className="text-white mb-4">Esplora il Catalogo 🔎</h2>
 
             <div className="card p-4 mb-5" style={{ backgroundColor: '#1F1F1F', border: '1px solid #333' }}>

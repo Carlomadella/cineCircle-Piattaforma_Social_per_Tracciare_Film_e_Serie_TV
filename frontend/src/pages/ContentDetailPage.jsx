@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import CollectionControl from '../components/CollectionControl';
 import ReviewsSection from '../components/ReviewsSection';
@@ -28,6 +28,13 @@ const ContentDetailPage = () => {
 
     return (
         <div className="container mt-5 mb-5 text-white">
+
+            <div className="mb-3">
+                <Link to="/" className="text-white-50 text-decoration-none hover-white">
+                    <i className="fas fa-arrow-left me-2"></i> Torna alla Home
+                </Link>
+            </div>
+
             <div className="row">
                 
                 {/* COLONNA SINISTRA: Locandina */}

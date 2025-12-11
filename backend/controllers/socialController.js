@@ -1,3 +1,17 @@
+const Activity = require('../models/activityModel');
+
+// Prende le attività dell'utente loggato (per il profilo)
+const getMyActivity = function(req, res) {
+    const userId = req.user.id; // Dal token
+
+    Activity.getUserActivity(userId, function(err, data) {
+        if (err) {
+            return res.status(500).json({ message: "Errore caricamento attività" });
+        }
+        res.json(data);
+    });
+};
+
 const followUser = function(req, res) {
     const userIdToFollow = req.params.userId;
 
@@ -35,5 +49,6 @@ module.exports = {
     followUser,
     unfollowUser,
     getActivityFeed,
-    getUserStats
+    getUserStats,
+    getMyActivity
 };

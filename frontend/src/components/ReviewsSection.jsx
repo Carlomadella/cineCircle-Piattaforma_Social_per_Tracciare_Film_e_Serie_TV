@@ -71,43 +71,50 @@ const ReviewsSection = ({ contentId }) => {
                 </div>
             )}
 
-            {/* LISTA RECENSIONI MIGLIORATA */}
+            {/* LISTA RECENSIONI AGGIORNATA */}
             <div className="review-list">
                 {reviews.length > 0 ? (
                     reviews.map((rev) => (
                         <div key={rev.id} className="card mb-3 border-0 border-bottom border-secondary rounded-0" style={{ backgroundColor: 'transparent' }}>
                             <div className="card-body px-0">
-                                <div className="d-flex align-items-center mb-2">
-                                    {/* AVATAR: Immagine o Iniziale */}
+                                <div className="d-flex align-items-start mb-2">
+                                    
+                                    {/* SINISTRA: Avatar */}
                                     {rev.profile_image ? (
                                         <img src={rev.profile_image} alt={rev.username} 
-                                             className="rounded-circle me-3" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
+                                             className="rounded-circle me-3" style={{ width: '45px', height: '45px', objectFit: 'cover' }} />
                                     ) : (
                                         <div className="rounded-circle bg-secondary d-flex justify-content-center align-items-center text-white fw-bold me-3"
-                                             style={{ width: '40px', height: '40px' }}>
+                                             style={{ width: '45px', height: '45px' }}>
                                             {rev.username.charAt(0).toUpperCase()}
                                         </div>
                                     )}
 
-                                    {/* NOME E STELLE VICINI */}
-                                    <div>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <h6 className="card-title text-white mb-0 fw-bold">{rev.username}</h6>
-                                            <span className="text-warning small">{"⭐".repeat(rev.rating)}</span>
-                                        </div>
-                                        {/* DATA LEGGIBILE */}
-                                        <small style={{ color: '#aaa', fontSize: '0.8rem' }}>
+                                    {/* CENTRO: Nome e Stelle */}
+                                    <div className="flex-grow-1">
+                                        <h6 className="card-title text-white mb-1 fw-bold">{rev.username}</h6>
+                                        <div className="text-warning small mb-2">{"⭐".repeat(rev.rating)}</div>
+                                        {/* Testo Recensione */}
+                                        <p className="card-text text-white-50">{rev.text}</p>
+                                    </div>
+
+                                    {/* DESTRA: Data e Azioni (Riempie lo spazio vuoto) */}
+                                    <div className="text-end ms-3 d-flex flex-column align-items-end">
+                                        <small style={{ color: '#aaa', fontSize: '0.8rem', marginBottom: '10px' }}>
                                             {new Date(rev.created_at).toLocaleDateString()}
                                         </small>
+                                        
+                                        {/* Bottone "Utile" finto per riempire spazio */}
+                                        <button className="btn btn-sm btn-outline-secondary d-flex align-items-center" style={{ fontSize: '0.75rem' }}>
+                                            <i className="fas fa-thumbs-up me-1"></i> Utile
+                                        </button>
                                     </div>
                                 </div>
-
-                                <p className="card-text text-white-50 ps-5 ms-2">{rev.text}</p>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <p className="text-white-50">Nessuna recensione ancora.</p>
+                    <p className="text-white-50">Nessuna recensione ancora. Sii il primo!</p>
                 )}
             </div>
         </div>

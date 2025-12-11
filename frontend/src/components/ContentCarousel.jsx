@@ -2,21 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const ContentCarousel = ({ title, contents }) => {
-    
     if (!contents || contents.length === 0) return null;
 
     return (
-        <div className="my-5">
-            {/* Titolo della Sezione con bordo colorato a sinistra */}
-            <h3 className="mb-4 border-start border-4 border-danger ps-3 fw-bold text-light">
+        <div className="my-5 position-relative">
+            <h3 className="mb-3 border-start border-4 border-danger ps-3 fw-bold text-white">
                 {title}
             </h3>
 
-            {/* Contenitore Scorrevole */}
-            <div className="horizontal-scroll-container">
+            <div className="horizontal-scroll-container px-2">
                 {contents.map((content) => (
                     <div key={content.id} className="col-card">
-                        <div className="card h-100 shadow border-0 bg-dark text-white">
+                        <div className="card h-100 border-0 text-white overflow-hidden">
                             {/* Link e Immagine */}
                             <Link to={`/content/${content.id}`}>
                                 <img 
@@ -27,15 +24,22 @@ const ContentCarousel = ({ title, contents }) => {
                                 />
                             </Link>
                             
-                            {/* Info minime */}
-                            <div className="card-body p-2">
-                                <h5 className="card-title mb-1" >
+                            {/* INFO NORMALI (Sempre visibili o solo titolo) */}
+                            <div className="card-body p-2 bg-dark">
+                                <h6 className="card-title text-truncate small mb-0 text-white">
                                     {content.title}
-                                </h5>
-                                <div className="d-flex justify-content-between small ">
-                                    <span>{content.year}</span>
-                                    <span style={{color: "gold"}}>★ {content.average_rating}</span>
+                                </h6>
+                            </div>
+
+                            {/* INFO HOVER (Appaiono quando passi sopra) */}
+                            <div className="hover-details">
+                                <div className="d-flex justify-content-between align-items-center small mb-2">
+                                    <span className="text-warning fw-bold">★ {content.average_rating}</span>
+                                    <span className="text-muted">{content.year}</span>
                                 </div>
+                                <p className="small text-white-50 mb-0" style={{fontSize: '0.75rem', lineHeight: '1.2'}}>
+                                    Clicca per dettagli
+                                </p>
                             </div>
                         </div>
                     </div>
