@@ -1,2 +1,181 @@
-# Tutti i film
-GET http://localhost:3000/api/contents
+@baseUrl = http://localhost:3000/api
+# INCOLLA QUI SOTTO IL TOKEN CHE RICEVI DOPO IL LOGIN (senza virgolette)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJUZXN0VXNlciIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6MTc2NTUwNTQ0NSwiZXhwIjoxNzY1NTkxODQ1fQ.OTIlVXaMEKxljhyAFrrWxT-xqjSa6lwKjnaYMtvvhgI
+
+### ==========================================
+### 1. AUTENTICAZIONE (Registration & Login)
+### ==========================================
+
+### Registrazione Nuovo Utente
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "username": "TestUser",
+    "email": "test@example.com",
+    "password": "Password123"
+}
+
+### Login (Copia il token dalla risposta!)
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "Password123"
+}
+
+### Logout
+POST {{baseUrl}}/logout
+Content-Type: application/json
+
+
+### ==========================================
+### 2. CONTENUTI (All Contents & Filters)
+### ==========================================
+
+### Prendi tutti i contenuti (Base)
+GET {{baseUrl}}/contents
+
+### Filtri Avanzati: Solo Film, Horror, dopo il 2000
+# Nota: Modifica gli ID o i valori in base al tuo DB
+GET {{baseUrl}}/contents?type=movie&min_year=2000&genre=7
+
+### Filtri Avanzati: Ordinati per Voto (Rating)
+GET {{baseUrl}}/contents?sort=rating
+
+### Ricerca per Parola Chiave (es. "Matrix")
+GET {{baseUrl}}/contents?keyword=Matrix
+
+### Dettaglio Singolo Film (Sostituisci 1 con un ID reale)
+GET {{baseUrl}}/contents/1
+
+### Lista Generi
+GET {{baseUrl}}/genres
+
+
+### ==========================================
+### 3. USER COLLECTION (Richiede Token)
+### ==========================================
+
+### Vedi la mia collezione
+GET {{baseUrl}}/my-collection
+Authorization: Bearer {{token}}
+
+### Controlla stato di un film specifico (es. ID 1)
+GET {{baseUrl}}/my-collection/check/1
+Authorization: Bearer {{token}}
+
+### Aggiungi/Aggiorna film nella collezione
+POST {{baseUrl}}/my-collection
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content_id": 1,
+    "status": "watched"
+}
+
+### Rimuovi film dalla collezione
+DELETE {{baseUrl}}/my-collection/1
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 4. REVIEWS (Recensioni)
+### ==========================================
+
+### Leggi recensioni di un film (es. ID 1)
+GET {{baseUrl}}/reviews/1
+
+### Scrivi una recensione
+POST {{baseUrl}}/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content_id": 1,
+    "rating": 5,
+    "text": "Capolavoro assoluto! Da vedere."
+}
+
+### Modifica recensione (Sostituisci ID recensione)
+PUT {{baseUrl}}/reviews/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "rating": 4,
+    "text": "Bello, ma il finale non mi convince."
+}
+
+### Elimina recensione
+DELETE {{baseUrl}}/reviews/1
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 5. LISTS (Liste Personalizzate)
+### ==========================================
+
+### Vedi tutte le liste pubbliche
+GET {{baseUrl}}/lists
+
+### Crea una nuova lista
+POST {{baseUrl}}/lists
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "I miei Horror preferiti",
+    "description": "Lista per Halloween",
+    "is_public": true
+}
+
+### Dettaglio di una lista (Sostituisci ID Lista)
+GET {{baseUrl}}/lists/1
+
+### Aggiungi film alla lista (ID Lista 1, ID Film 2)
+POST {{baseUrl}}/lists/1/items
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content_id": 2
+}
+
+### Rimuovi film dalla lista
+DELETE {{baseUrl}}/lists/1/items/2
+Authorization: Bearer {{token}}
+
+### Elimina l'intera lista
+DELETE {{baseUrl}}/lists/1
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 6. SOCIAL & FEED
+### ==========================================
+
+### Vedi le mie attività recenti
+GET {{baseUrl}}/my-activity
+Authorization: Bearer {{token}}
+
+### Controlla se seguo un utente (es. User ID 2)
+GET {{baseUrl}}/follow/status/2
+Authorization: Bearer {{token}}
+
+### Inizia a seguire un utente
+POST {{baseUrl}}/follow/2
+Authorization: Bearer {{token}}
+
+### Smetti di seguire un utente
+DELETE {{baseUrl}}/follow/2
+Authorization: Bearer {{token}}
+
+### Feed Attività degli amici (Placeholder)
+GET {{baseUrl}}/feed
+Authorization: Bearer {{token}}
+
+### Statistiche Utente (Placeholder)
+GET {{baseUrl}}/users/1/stats
