@@ -1,4 +1,6 @@
 const Activity = require('../models/activityModel');
+// Importiamo il modello appena creato
+const Follow = require('../models/followModel');
 
 // Prende le attività dell'utente loggato (per il profilo)
 const getMyActivity = function(req, res) {
@@ -12,19 +14,48 @@ const getMyActivity = function(req, res) {
     });
 };
 
+// Inizia a seguire
 const followUser = function(req, res) {
-    const userIdToFollow = req.params.userId;
+    // L'ID di chi clicca lo prendiamo dal token (grazie al middleware)
+    const followerId = req.user.id;
+    // L'ID di chi viene seguito lo prendiamo dall'URL (es. /follow/5)
+    const followingId = req.params.userId;
 
-    res.status(201).json({
-        message: "Hai iniziato a seguire l'utente " + userIdToFollow
+    // Impediamo di seguire se stessi (sarebbe un bug buffo)
+    if (followerId == followingId) {
+        return res.status(400).json({ message: "Non puoi seguire te stesso!" });
+    }
+
+    // Chiamiamo il modello
+    Follow.follow(followerId, followingId, function(err, data) {
+        if (err) {
+            // Se l'errore è 'ER_DUP_ENTRY' significa che lo segui già
+            return res.status(500).json({ message: "Errore o lo segui già" });
+        }
+        res.json({ message: "Ora segui questo utente! ✨" });
     });
 };
 
+// Smetti di seguire
 const unfollowUser = function(req, res) {
-    const userIdToUnfollow = req.params.userId;
+    const followerId = req.user.id;
+    const followingId = req.params.userId;
 
-    res.json({
-        message: "Non segui più l'utente " + userIdToUnfollow
+    Follow.unfollow(followerId, followingId, function(err, data) {
+        if (err) return res.status(500).json({ message: "Errore database" });
+        res.json({ message: "Non segui più questo utente." });
+    });
+};
+
+// Controlla stato follow (da chiamare quando carichi il profilo di un altro)
+const checkFollowStatus = function(req, res) {
+    const followerId = req.user.id;
+    const followingId = req.params.userId;
+
+    Follow.isFollowing(followerId, followingId, function(err, isFollowing) {
+        if (err) return res.status(500).json({ message: "Errore" });
+        // Restituiamo true o false
+        res.json({ isFollowing: isFollowing });
     });
 };
 
@@ -50,5 +81,6 @@ module.exports = {
     unfollowUser,
     getActivityFeed,
     getUserStats,
-    getMyActivity
+    getMyActivity,
+    checkFollowStatus
 };
