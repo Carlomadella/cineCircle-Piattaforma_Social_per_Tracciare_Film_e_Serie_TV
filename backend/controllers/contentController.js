@@ -3,30 +3,32 @@ const Content = require('../models/contentModel');
 
 // 1. GET /contents (Home e Ricerca)
 const searchContents = function(req, res) {
-    // Leggiamo i filtri dall'URL (es: ?keyword=Matrix&sort=rating)
+    // Estraiamo TUTTI i possibili filtri dall'URL
+    // Esempio URL: /api/contents?genre=2&min_year=1990&sort=rating
     const filters = {
         keyword: req.query.keyword,
+        type: req.query.type,
         sort: req.query.sort,
-        type: req.query.type
-        // Qui aggiungeremo genre, year, ecc.
+        genre: req.query.genre,         // <--- Nuovo
+        min_year: req.query.min_year,   // <--- Nuovo
+        max_year: req.query.max_year,   // <--- Nuovo
+        min_rating: req.query.min_rating // <--- Nuovo
     };
 
-    console.log("Richiesta contenuti con filtri:", filters);
+    console.log("Ricerca con filtri avanzati:", filters);
 
-    // Chiamiamo il Modello
     Content.search(filters, function(err, data) {
         if (err) {
             return res.status(500).json({ message: "Errore nel recupero dei contenuti" });
         }
         
-        // Restituiamo i dati trovati
-        // Nota: Il frontend si aspetta un array o un oggetto con dentro l'array
         res.json({ 
             count: data.length, 
             results: data 
         });
     });
 };
+
 
 // 2. GET /contents/:id (Dettaglio)
 const getContentDetails = function(req, res) {
