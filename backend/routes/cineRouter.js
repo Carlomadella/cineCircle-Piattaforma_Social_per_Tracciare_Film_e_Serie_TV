@@ -53,7 +53,7 @@ router.get('/my-activity', verifyToken, socialController.getMyActivity);
 router.post('/follow/:userId', verifyToken, socialController.followUser);
 router.delete('/follow/:userId', verifyToken, socialController.unfollowUser);
 router.get('/feed', verifyToken, socialController.getActivityFeed);
-router.get('/users/:userId/stats', socialController.getUserStats);
+router.get('/users', verifyToken, socialController.getAllUsers);
 router.get('/follow/status/:userId', verifyToken, socialController.checkFollowStatus);
 // 4. Feed Amici (Home Social)
 router.get('/feed', verifyToken, socialController.getActivityFeed);

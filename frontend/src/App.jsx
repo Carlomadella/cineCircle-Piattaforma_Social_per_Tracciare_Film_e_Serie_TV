@@ -14,9 +14,7 @@ import ContentDetailPage from './pages/ContentDetailPage';
 import SearchPage from './pages/SearchPage'; 
 import FeedPage from './pages/FeedPage'; 
 import PublicProfilePage from './pages/PublicProfilePage';
-
-// Placeholder per 404
-const NotFound = () => <div className="container mt-5 text-white"><h1>404 - Pagina non trovata</h1></div>;
+import NotFoundPage from './pages/NotFoundPage'; 
 
 function App() {
     return (
@@ -37,7 +35,7 @@ function App() {
                     
                     <Route path="/content/:id" element={<ContentDetailPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="*" element={<NotFound />} />
+                    <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </Router>
         </AuthProvider>

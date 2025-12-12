@@ -41,6 +41,12 @@ const ProfilePage = () => {
 
     return (
         <div className="container mt-5">
+            {/* NUOVO: Tasto Indietro */}
+            <div className="mb-4">
+                <Link to="/" className="text-white-50 text-decoration-none hover-underline">
+                    <i className="fas fa-arrow-left me-2"></i> Torna alla Home
+                </Link>
+            </div>
             <div className="row">
                 {/* COLONNA SINISTRA: Info Utente e Attività */}
                 <div className="col-md-4 mb-5">

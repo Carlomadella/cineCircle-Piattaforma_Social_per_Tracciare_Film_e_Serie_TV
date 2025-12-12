@@ -7,6 +7,38 @@ const FeedPage = () => {
     const [activities, setActivities] = useState([]);
     // Stato di caricamento
     const [loading, setLoading] = useState(true);
+    // Aggiungi uno stato per i suggerimenti
+    const [suggestedUsers, setSuggestedUsers] = useState([]);
+
+    // Nell'useEffect, se activities.length è 0, chiama /users
+    useEffect(() => {
+        api.get('/feed').then(res => {
+            setActivities(res.data.feed);
+            setLoading(false);
+            
+            // Se il feed è vuoto, carichiamo utenti da seguire
+            if (res.data.feed.length === 0) {
+                api.get('/users').then(uRes => setSuggestedUsers(uRes.data));
+            }
+        });
+    }, []);
+
+    // Nel return, se activities è vuoto:
+    {!loading && activities.length === 0 && (
+        <div className="text-center py-5">
+            <h4 className="text-white">Il feed è vuoto. Segui qualcuno della community!</h4>
+            <div className="row justify-content-center mt-4">
+                {suggestedUsers.map(u => (
+                    <div key={u.id} className="col-md-3 mb-3">
+                        <div className="card bg-dark text-white border-secondary p-3">
+                            <h5>{u.username}</h5>
+                            <Link to={`/user/${u.id}`} className="btn btn-sm btn-outline-danger mt-2">Vedi Profilo</Link>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )}
 
     useEffect(() => {
         // Chiamiamo l'endpoint che abbiamo appena testato

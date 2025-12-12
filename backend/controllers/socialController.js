@@ -80,11 +80,24 @@ const getUserStats = function(req, res) {
     });
 };
 
+// Ottiene lista utenti (esclusi me stesso)
+const getAllUsers = function(req, res) {
+    const myId = req.user.id;
+    const query = "SELECT id, username, profile_image FROM users WHERE id != ? LIMIT 20";
+    
+    const db = require('../config/db'); // Assicurati di importare db se non c'è
+    db.query(query, [myId], function(err, results) {
+        if (err) return res.status(500).json({ error: "Errore DB" });
+        res.json(results);
+    });
+};
+
 module.exports = { 
     followUser, 
     unfollowUser, 
     checkFollowStatus, 
     getMyActivity, 
     getActivityFeed, 
-    getUserStats 
+    getUserStats,
+    getAllUsers
 };
