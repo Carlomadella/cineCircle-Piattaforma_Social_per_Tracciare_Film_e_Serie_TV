@@ -61,5 +61,11 @@ router.get('/feed', verifyToken, socialController.getActivityFeed);
 router.get('/users/:userId/stats', socialController.getUserStats);
 router.post('/follow/:userId', verifyToken, socialController.followUser);
 router.delete('/follow/:userId', verifyToken, socialController.unfollowUser);
+router.get('/users/:userId/followers', verifyToken, socialController.getUserFollowers);
+router.get('/users/:userId/following', verifyToken, socialController.getUserFollowing);
+router.get('/users/:userId/activity', verifyToken, socialController.getUserPublicActivity);
+router.get('/users/search', verifyToken, socialController.searchUsers);
+
+  
 
 module.exports = router;

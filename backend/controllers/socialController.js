@@ -1,5 +1,6 @@
 const Follow = require('../models/followModel');
-const Activity = require('../models/activityModel'); // Importiamo il modello aggiornato
+const Activity = require('../models/activityModel'); // Importiamo il modello 
+const User = require('../models/userModel'); 
 
 // --- GESTIONE FOLLOW (Già presente) ---
 const followUser = function(req, res) {
@@ -92,6 +93,39 @@ const getAllUsers = function(req, res) {
     });
 };
 
+const getUserFollowers = function(req, res) {
+    Follow.getFollowers(req.params.userId, (err, data) => {
+        if (err) return res.status(500).json({ error: "Errore DB" });
+        res.json(data);
+    });
+};
+
+const getUserFollowing = function(req, res) {
+    Follow.getFollowing(req.params.userId, (err, data) => {
+        if (err) return res.status(500).json({ error: "Errore DB" });
+        res.json(data);
+    });
+};
+
+// Funzione per vedere le attività di UN utente specifico (non il mio, ma di un altro)
+const getUserPublicActivity = function(req, res) {
+    const targetUserId = req.params.userId;
+    Activity.getUserActivity(targetUserId, (err, data) => {
+        if (err) return res.status(500).json({ error: "Errore DB" });
+        res.json(data);
+    });
+};
+// Funzione per cercare l'username di un utente nel feed
+const searchUsers = function(req, res) {
+    const keyword = req.query.q; // Leggiamo ?q=Mario
+    if (!keyword) return res.json([]);
+
+    User.searchByUsername(keyword, function(err, data) {
+        if (err) return res.status(500).json({ error: "Errore ricerca utenti" });
+        res.json(data);
+    });
+};
+
 module.exports = { 
     followUser, 
     unfollowUser, 
@@ -99,5 +133,9 @@ module.exports = {
     getMyActivity, 
     getActivityFeed, 
     getUserStats,
-    getAllUsers
+    getAllUsers,
+    getUserFollowers,
+    getUserFollowing,
+    getUserPublicActivity,
+    searchUsers
 };

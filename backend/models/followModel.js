@@ -53,5 +53,33 @@ const isFollowing = function(followerId, followingId, resultCallback) {
     });
 };
 
+// Ottieni chi segue l'utente (Followers)
+const getFollowers = function(userId, resultCallback) {
+    const query = `
+        SELECT u.id, u.username, u.profile_image 
+        FROM follows f 
+        JOIN users u ON f.follower_id = u.id 
+        WHERE f.following_id = ?
+    `;
+    db.query(query, [userId], (err, res) => {
+        if(err) return resultCallback(err, null);
+        resultCallback(null, res);
+    });
+};
+
+// Ottieni chi l'utente sta seguendo (Following)
+const getFollowing = function(userId, resultCallback) {
+    const query = `
+        SELECT u.id, u.username, u.profile_image 
+        FROM follows f 
+        JOIN users u ON f.following_id = u.id 
+        WHERE f.follower_id = ?
+    `;
+    db.query(query, [userId], (err, res) => {
+        if(err) return resultCallback(err, null);
+        resultCallback(null, res);
+    });
+};
+
 // Esportiamo le funzioni per usarle nel controller
-module.exports = { follow, unfollow, isFollowing };
+module.exports = { follow, unfollow, isFollowing, getFollowers, getFollowing };

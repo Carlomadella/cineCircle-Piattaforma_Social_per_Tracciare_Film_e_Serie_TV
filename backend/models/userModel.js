@@ -40,7 +40,20 @@ const findByEmail = function(email, resultCallback) {
     });
 };
 
+// Funzione per cercare utenti tramite stringa parziale
+const searchByUsername = function(keyword, resultCallback) {
+    const query = "SELECT id, username, profile_image FROM users WHERE username LIKE ? LIMIT 10";
+    db.query(query, [`%${keyword}%`], function(err, res) {
+        if (err) {
+            resultCallback(err, null);
+            return;
+        }
+        resultCallback(null, res);
+    });
+};
+
 module.exports = {
     create,
-    findByEmail
+    findByEmail,
+    searchByUsername
 };
