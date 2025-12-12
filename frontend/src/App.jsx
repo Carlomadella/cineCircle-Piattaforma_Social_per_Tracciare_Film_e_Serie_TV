@@ -12,6 +12,8 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import ContentDetailPage from './pages/ContentDetailPage';
 import SearchPage from './pages/SearchPage'; 
+import FeedPage from './pages/FeedPage'; 
+import PublicProfilePage from './pages/PublicProfilePage';
 
 // Placeholder per 404
 const NotFound = () => <div className="container mt-5 text-white"><h1>404 - Pagina non trovata</h1></div>;
@@ -27,6 +29,8 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/feed" element={<FeedPage />} />
+                    <Route path="/user/:id" element={<PublicProfilePage />} />
                     
                     {/* Rotta di Ricerca */}
                     <Route path="/search" element={<SearchPage />} />

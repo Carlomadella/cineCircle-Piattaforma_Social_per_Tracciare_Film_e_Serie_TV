@@ -42,8 +42,8 @@ const Navbar = () => {
 
                         {user ? (
                             <>
-                                <Link className="nav-link text-white mx-2" to="/profile">
-                                    <i className="fas fa-user-circle me-1"></i> {user.username}
+                                <Link className="nav-link text-white mx-2" to="/feed">
+                                    <i className="fas fa-stream me-1"></i> Feed
                                 </Link>
                                 <button onClick={handleLogout} className="btn btn-outline-danger btn-sm ms-3">Esci</button>
                             </>
